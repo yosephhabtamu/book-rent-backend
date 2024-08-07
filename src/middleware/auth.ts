@@ -23,7 +23,8 @@ export const defineAbilitiesFor = (user: any) => {
 
   if (user.role === 'admin') {
     can('manage', 'all');
-  } else {
+  } 
+  else {
     can('read', 'Book');
     can('rent', 'Book', { available: true });
   }

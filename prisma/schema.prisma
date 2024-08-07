@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  fullName     String
+  location     String
+  phoneNumber  String
+  password     String
+  role         Role     @default(user)
+  isActive     Boolean  @default(true)
+  wallet       Float    @default(0.0)
+  books        BookUser[] @relation("UserBooks")
+  rentedBooks  BookRent[] @relation("UserRents")
+}
+
+// Define the BookType model
+model BookType {
+  id           String    @id @default(uuid()) @db.Uuid
+  title        String
+  author       String
+  available    Boolean   @default(true)
+  status       BookStatus @default(pending)
+  categoryId   String    @db.Uuid
+  category     Category  @relation(fields: [categoryId], references: [id])
+  owners       BookUser[] @relation("BookOwners")
+  rents        BookRent[] @relation("BookRents")
+}
+
+// Define the BookUser model (for managing ownership and pricing)
+model BookUser {
+  userId   String  @db.Uuid
+  bookId   String   @db.Uuid
+  user     User   @relation("UserBooks", fields: [userId], references: [id])
+  book     BookType  @relation("BookOwners", fields: [bookId], references: [id])
+  quantity Int
+  price    Float
+
+  @@id([userId, bookId]) // Composite primary key
+}
+
+// Define the BookRent model (for managing book rentals)
+model BookRent {
+  userId    String   @db.Uuid
+  bookId    String   @db.Uuid
+  user      User     @relation("UserRents", fields: [userId], references: [id])
+  book      BookType @relation("BookRents", fields: [bookId], references: [id])
+  lentDate  DateTime @default(now())
+  returnDate DateTime?
+
+  @@id([userId, bookId, lentDate]) // Composite primary key
+}
+
+// Define the Category model
+model Category {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+  books BookType[] // Relation to books in this category
+}
+
+// Define enums
+enum Role {
+  admin
+  owner
+  user
+}
+
+enum BookStatus {
+  pending   // Book is uploaded but not yet approved
+  approved  // Book is approved and available for rent
+  rejected  // Book is rejected and not available for rent
+}

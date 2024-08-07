@@ -1,0 +1,47 @@
+[
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "email": "johndoe@example.com",
+      "fullName": "John Doe",
+      "location": "New York, NY",
+      "phoneNumber": "+1-234-567-8901",
+      "password": "securepassword123",
+      "role": "user",
+      "isActive": true,
+      "wallet": 50.0
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174001",
+      "email": "janedoe@example.com",
+      "fullName": "Jane Doe",
+      "location": "Los Angeles, CA",
+      "phoneNumber": "+1-987-654-3210",
+      "password": "anothersecurepassword",
+      "role": "user",
+      "isActive": true,
+      "wallet": 100.0
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174002",
+      "email": "alice.smith@example.com",
+      "fullName": "Alice Smith",
+      "location": "Chicago, IL",
+      "phoneNumber": "+1-555-123-4567",
+      "password": "yetanotherpassword",
+      "role": "owner",
+      "isActive": false,
+      "wallet": 20.0
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174003",
+      "email": "admin@example.com",
+      "fullName": "Admin User",
+      "location": "Admin City",
+      "phoneNumber": "+1-111-222-3333",
+      "password": "adminpassword",
+      "role": "admin",
+      "isActive": true,
+      "wallet": 0.0
+    }
+  ]
+  
