@@ -11,7 +11,8 @@ const router = Router();
 
 router.get('/',  getBooks);
 router.post('/',  validateRequest(bookSchema), createBook);
-router.put('/rent/:id',  rentBook);
+router.get('/:id', )
+router.put('/rent',  rentBook);
 router.put('/status', validateRequest(bookStatusSchema),changeBookStatus);
 
 export default router;

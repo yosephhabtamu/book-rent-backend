@@ -14,60 +14,61 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
-  fullName     String
-  location     String
-  phoneNumber  String
-  password     String
-  role         Role     @default(user)
-  isActive     Boolean  @default(true)
-  wallet       Float    @default(0.0)
-  books        BookUser[] @relation("UserBooks")
-  rentedBooks  BookRent[] @relation("UserRents")
+  id          String     @id @default(uuid()) @db.Uuid
+  email       String     @unique
+  fullName    String
+  location    String
+  phoneNumber String
+  password    String
+  role        Role       @default(user)
+  isActive    Boolean    @default(true)
+  wallet      Float      @default(0.0)
+  books       BookUser[]
+  rents       BookRent[]
 }
 
 // Define the BookType model
 model BookType {
-  id           String    @id @default(uuid()) @db.Uuid
-  title        String
-  author       String
-  available    Boolean   @default(true)
-  status       BookStatus @default(pending)
-  categoryId   String    @db.Uuid
-  category     Category  @relation(fields: [categoryId], references: [id])
-  owners       BookUser[] @relation("BookOwners")
-  rents        BookRent[] @relation("BookRents")
+  id         String     @id @default(uuid()) @db.Uuid
+  title      String
+  author     String
+  available  Boolean    @default(true)
+  status     BookStatus @default(pending)
+  categoryId String     @db.Uuid
+  category   Category   @relation(fields: [categoryId], references: [id])
+  owners     BookUser[]
+  BookRent   BookRent[]
 }
 
 // Define the BookUser model (for managing ownership and pricing)
 model BookUser {
-  userId   String  @db.Uuid
-  bookId   String   @db.Uuid
-  user     User   @relation("UserBooks", fields: [userId], references: [id])
-  book     BookType  @relation("BookOwners", fields: [bookId], references: [id])
-  quantity Int
-  price    Float
-
-  @@id([userId, bookId]) // Composite primary key
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @db.Uuid
+  bookId String @db.Uuid
+  user      User       @relation(fields: [userId], references: [id])
+  book      BookType   @relation(fields: [bookId], references: [id])
+  bookRents BookRent[]
+  quantity  Int
+  price     Float
 }
 
 // Define the BookRent model (for managing book rentals)
 model BookRent {
-  userId    String   @db.Uuid
-  bookId    String   @db.Uuid
-  user      User     @relation("UserRents", fields: [userId], references: [id])
-  book      BookType @relation("BookRents", fields: [bookId], references: [id])
-  lentDate  DateTime @default(now())
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  bookId     String    @db.Uuid
+  user       User      @relation(references: [id], fields: [userId])
+  book       BookType  @relation(references: [id], fields: [bookId])
+  lentDate   DateTime  @default(now())
   returnDate DateTime?
-
-  @@id([userId, bookId, lentDate]) // Composite primary key
+  BookUser   BookUser? @relation(fields: [bookUserId], references: [id])
+  bookUserId String?   @db.Uuid
 }
 
 // Define the Category model
 model Category {
-  id   String @id @default(uuid()) @db.Uuid
-  name String
+  id    String     @id @default(uuid()) @db.Uuid
+  name  String
   books BookType[] // Relation to books in this category
 }
 
@@ -79,7 +80,7 @@ enum Role {
 }
 
 enum BookStatus {
-  pending   // Book is uploaded but not yet approved
-  approved  // Book is approved and available for rent
-  rejected  // Book is rejected and not available for rent
+  pending // Book is uploaded but not yet approved
+  approved // Book is approved and available for rent
+  rejected // Book is rejected and not available for rent
 }

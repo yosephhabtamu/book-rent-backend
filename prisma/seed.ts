@@ -32,7 +32,7 @@ async function seed(dirPath: string, modelName: string) {
 async function main() {
     try {
         await seed("categorySeed.json", "Category");
-        // await seed("userSeed.json", "User");
+        await seed("userSeed.json", "User");
         console.log("Seeded successfully.");
     } catch (error) {
         console.error("Error while seeding:", error);

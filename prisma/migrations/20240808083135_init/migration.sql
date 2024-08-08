@@ -33,22 +33,27 @@ CREATE TABLE "BookType" (
 
 -- CreateTable
 CREATE TABLE "BookUser" (
+    "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "bookId" UUID NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "bookTypeId" UUID NOT NULL,
 
-    CONSTRAINT "BookUser_pkey" PRIMARY KEY ("userId","bookId")
+    CONSTRAINT "BookUser_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "BookRent" (
+    "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "bookId" UUID NOT NULL,
     "lentDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "returnDate" TIMESTAMP(3),
+    "bookUserId" UUID,
+    "bookTypeId" UUID NOT NULL,
 
-    CONSTRAINT "BookRent_pkey" PRIMARY KEY ("userId","bookId","lentDate")
+    CONSTRAINT "BookRent_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -69,10 +74,13 @@ ALTER TABLE "BookType" ADD CONSTRAINT "BookType_categoryId_fkey" FOREIGN KEY ("c
 ALTER TABLE "BookUser" ADD CONSTRAINT "BookUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BookUser" ADD CONSTRAINT "BookUser_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "BookType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BookUser" ADD CONSTRAINT "BookUser_bookTypeId_fkey" FOREIGN KEY ("bookTypeId") REFERENCES "BookType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BookRent" ADD CONSTRAINT "BookRent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BookRent" ADD CONSTRAINT "BookRent_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "BookType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BookRent" ADD CONSTRAINT "BookRent_bookTypeId_fkey" FOREIGN KEY ("bookTypeId") REFERENCES "BookType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BookRent" ADD CONSTRAINT "BookRent_bookUserId_fkey" FOREIGN KEY ("bookUserId") REFERENCES "BookUser"("id") ON DELETE SET NULL ON UPDATE CASCADE;
